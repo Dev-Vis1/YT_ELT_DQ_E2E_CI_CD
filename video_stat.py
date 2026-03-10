@@ -21,7 +21,7 @@ def get_playlist_id():
 
         channel_playlistID = data["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
 
-        print(channel_playlistID)
+        #print(channel_playlistID)
         return channel_playlistID
 
     except requests.exceptions.RequestException as e:
