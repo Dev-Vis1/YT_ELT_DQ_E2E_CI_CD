@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Linux Command Line Cheat Sheet</title>
+<style>
+  /* ── Reset & base ─────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 11px;
+    line-height: 1.45;
+    color: #1a1a2e;
+    background: #f5f6fa;
+  }
+
+  /* ── Page layout ──────────────────────────────────────────── */
+  .page {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  /* ── Header ───────────────────────────────────────────────── */
+  header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    color: #e0e0e0;
+    padding: 22px 28px;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 4px;
+  }
+  header h1 { font-size: 22px; letter-spacing: 2px; color: #e94560; }
+  header p  { font-size: 11px; color: #a0a0b0; margin-top: 4px; }
+
+  /* ── Grid columns ─────────────────────────────────────────── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .grid.two-col { grid-template-columns: repeat(2, 1fr); }
+  .span2 { grid-column: span 2; }
+
+  /* ── Section card ─────────────────────────────────────────── */
+  .section {
+    background: #ffffff;
+    border-radius: 6px;
+    border-top: 3px solid #e94560;
+    padding: 10px 12px;
+    break-inside: avoid;
+  }
+  .section.blue   { border-top-color: #2980b9; }
+  .section.green  { border-top-color: #27ae60; }
+  .section.orange { border-top-color: #e67e22; }
+  .section.purple { border-top-color: #8e44ad; }
+  .section.teal   { border-top-color: #16a085; }
+  .section.pink   { border-top-color: #e91e8c; }
+
+  .section h2 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #e94560;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #f0f0f8;
+  }
+  .section.blue   h2 { color: #2980b9; }
+  .section.green  h2 { color: #27ae60; }
+  .section.orange h2 { color: #e67e22; }
+  .section.purple h2 { color: #8e44ad; }
+  .section.teal   h2 { color: #16a085; }
+  .section.pink   h2 { color: #e91e8c; }
+
+  /* ── Command table ────────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; }
+  td {
+    padding: 3px 4px;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f8f9fc; }
+  td:first-child {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 10px;
+    color: #0f3460;
+    white-space: nowrap;
+    width: 55%;
+    font-weight: 600;
+  }
+  td:last-child {
+    color: #444;
+    font-size: 10px;
+  }
+
+  /* ── Inline code ──────────────────────────────────────────── */
+  code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 10px;
+    background: #eef1f8;
+    color: #0f3460;
+    padding: 0 3px;
+    border-radius: 3px;
+  }
+
+  /* ── Sub-heading inside a section ────────────────────────── */
+  .sub {
+    font-size: 10px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin: 7px 0 3px;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────── */
+  footer {
+    text-align: center;
+    font-size: 10px;
+    color: #aaa;
+    margin-top: 16px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+  }
+
+  /* ── Print styles ─────────────────────────────────────────── */
+  @media print {
+    body { background: #fff; font-size: 10px; }
+    .page { margin: 0; padding: 10px; max-width: 100%; }
+    header { border-radius: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4 landscape; margin: 8mm; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ════════════════ HEADER ════════════════ -->
+<header>
+  <h1>&#9001; LINUX COMMAND LINE CHEAT SHEET &#9002;</h1>
+  <p>Focus: Log Analysis &nbsp;|&nbsp; Process Management &nbsp;|&nbsp; Filesystem &nbsp;|&nbsp; htop &nbsp;|&nbsp; iostat &nbsp;|&nbsp; strace &nbsp;|&nbsp; + Core Utilities</p>
+</header>
+
+<!-- ════════════════ ROW 1 ════════════════ -->
+<div class="grid">
+
+  <!-- journalctl -->
+  <div class="section">
+    <h2>🔍 journalctl — systemd logs</h2>
+    <table>
+      <tr><td>journalctl</td><td>All logs (oldest first)</td></tr>
+      <tr><td>journalctl -r</td><td>Reverse — newest first</td></tr>
+      <tr><td>journalctl -f</td><td>Follow / tail live</td></tr>
+      <tr><td>journalctl -n 50</td><td>Last 50 lines</td></tr>
+      <tr><td>journalctl -u nginx</td><td>Logs for unit <code>nginx</code></td></tr>
+      <tr><td>journalctl -u nginx -f</td><td>Follow unit logs</td></tr>
+      <tr><td>journalctl -p err</td><td>Priority: emerg warn notice info debug crit err</td></tr>
+      <tr><td>journalctl -p 0..3</td><td>Levels 0–3 (emerg→err)</td></tr>
+      <tr><td>journalctl --since "1 hour ago"</td><td>Time window start</td></tr>
+      <tr><td>journalctl --since "2026-03-20 08:00" --until "09:00"</td><td>Exact range</td></tr>
+      <tr><td>journalctl -b</td><td>Current boot only</td></tr>
+      <tr><td>journalctl -b -1</td><td>Previous boot</td></tr>
+      <tr><td>journalctl --list-boots</td><td>All boot sessions</td></tr>
+      <tr><td>journalctl _PID=1234</td><td>Logs for specific PID</td></tr>
+      <tr><td>journalctl _UID=1000</td><td>Logs for user UID 1000</td></tr>
+      <tr><td>journalctl -o json-pretty</td><td>JSON output</td></tr>
+      <tr><td>journalctl -o short-iso</td><td>ISO timestamp format</td></tr>
+      <tr><td>journalctl --disk-usage</td><td>Journal disk usage</td></tr>
+      <tr><td>journalctl --vacuum-size=500M</td><td>Trim journal to 500 MB</td></tr>
+      <tr><td>journalctl --vacuum-time=7d</td><td>Remove entries older than 7 days</td></tr>
+      <tr><td>journalctl -u sshd | grep Failed</td><td>Pipe to grep</td></tr>
+    </table>
+  </div>
+
+  <!-- dmesg & syslog -->
+  <div class="section blue">
+    <h2>📋 dmesg &amp; syslog</h2>
+    <div class="sub">dmesg — kernel ring buffer</div>
+    <table>
+      <tr><td>dmesg</td><td>All kernel messages</td></tr>
+      <tr><td>dmesg -H</td><td>Human-readable (paged)</td></tr>
+      <tr><td>dmesg -T</td><td>Human-readable timestamps</td></tr>
+      <tr><td>dmesg -w</td><td>Follow / watch live</td></tr>
+      <tr><td>dmesg -l err,crit</td><td>Filter by log level</td></tr>
+      <tr><td>dmesg -f kern</td><td>Facility: kern user mail daemon</td></tr>
+      <tr><td>dmesg | grep -i usb</td><td>Filter by keyword</td></tr>
+      <tr><td>dmesg | grep -i error</td><td>Find errors</td></tr>
+      <tr><td>dmesg | tail -20</td><td>Last 20 kernel lines</td></tr>
+      <tr><td>dmesg --clear</td><td>Clear the ring buffer (root)</td></tr>
+    </table>
+    <div class="sub">syslog / rsyslog files</div>
+    <table>
+      <tr><td>/var/log/syslog</td><td>General system log (Debian/Ubuntu)</td></tr>
+      <tr><td>/var/log/messages</td><td>General log (RHEL/CentOS)</td></tr>
+      <tr><td>/var/log/auth.log</td><td>Auth &amp; sudo events</td></tr>
+      <tr><td>/var/log/kern.log</td><td>Kernel messages</td></tr>
+      <tr><td>/var/log/cron</td><td>Cron job log</td></tr>
+      <tr><td>tail -f /var/log/syslog</td><td>Follow syslog live</td></tr>
+      <tr><td>grep -i error /var/log/syslog</td><td>Find errors</td></tr>
+      <tr><td>zcat /var/log/syslog.1.gz | grep ssh</td><td>Read compressed rotated log</td></tr>
+      <tr><td>logger "test message"</td><td>Write to syslog manually</td></tr>
+    </table>
+    <div class="sub">Log analysis combos</div>
+    <table>
+      <tr><td>grep -c "ERROR" /var/log/app.log</td><td>Count error lines</td></tr>
+      <tr><td>awk '{print $1}' access.log | sort | uniq -c | sort -rn | head</td><td>Top IPs</td></tr>
+      <tr><td>sed -n '/Mar 20 08/,/Mar 20 09/p' syslog</td><td>Time slice with sed</td></tr>
+      <tr><td>less +F /var/log/app.log</td><td>less with live follow (Ctrl+C to scroll)</td></tr>
+    </table>
+  </div>
+
+  <!-- Process Management -->
+  <div class="section green">
+    <h2>⚙️ Process Management</h2>
+    <div class="sub">View processes</div>
+    <table>
+      <tr><td>ps aux</td><td>All processes, BSD style</td></tr>
+      <tr><td>ps -ef</td><td>All processes, UNIX style</td></tr>
+      <tr><td>ps aux | grep nginx</td><td>Find process by name</td></tr>
+      <tr><td>ps -p 1234 -o pid,ppid,cmd,%mem,%cpu</td><td>Custom columns for PID</td></tr>
+      <tr><td>pgrep nginx</td><td>Get PIDs by name</td></tr>
+      <tr><td>pgrep -a nginx</td><td>PIDs + full command</td></tr>
+      <tr><td>pidof nginx</td><td>PIDs of named process</td></tr>
+      <tr><td>top</td><td>Interactive process viewer</td></tr>
+      <tr><td>pstree -p</td><td>Process tree with PIDs</td></tr>
+    </table>
+    <div class="sub">Signals &amp; control</div>
+    <table>
+      <tr><td>kill 1234</td><td>SIGTERM (graceful)</td></tr>
+      <tr><td>kill -9 1234</td><td>SIGKILL (force)</td></tr>
+      <tr><td>kill -HUP 1234</td><td>SIGHUP (reload config)</td></tr>
+      <tr><td>killall nginx</td><td>Kill by name</td></tr>
+      <tr><td>pkill -u username</td><td>Kill all procs for user</td></tr>
+      <tr><td>Ctrl+C</td><td>SIGINT — interrupt foreground</td></tr>
+      <tr><td>Ctrl+Z</td><td>Suspend to background</td></tr>
+      <tr><td>bg %1</td><td>Resume job 1 in background</td></tr>
+      <tr><td>fg %1</td><td>Bring job 1 to foreground</td></tr>
+      <tr><td>jobs</td><td>List background jobs</td></tr>
+      <tr><td>nohup script.sh &amp;</td><td>Run immune to hangup</td></tr>
+    </table>
+    <div class="sub">Priority</div>
+    <table>
+      <tr><td>nice -n 10 cmd</td><td>Start with niceness 10 (lower priority)</td></tr>
+      <tr><td>renice -n 5 -p 1234</td><td>Change niceness of running PID</td></tr>
+    </table>
+    <div class="sub">systemd services</div>
+    <table>
+      <tr><td>systemctl status nginx</td><td>Service status</td></tr>
+      <tr><td>systemctl start|stop|restart nginx</td><td>Control service</td></tr>
+      <tr><td>systemctl enable|disable nginx</td><td>Auto-start at boot</td></tr>
+      <tr><td>systemctl list-units --type service</td><td>All services</td></tr>
+      <tr><td>systemctl list-units --failed</td><td>Failed units</td></tr>
+    </table>
+  </div>
+
+</div><!-- /row 1 -->
+
+<!-- ════════════════ ROW 2 ════════════════ -->
+<div class="grid" style="margin-top:8px;">
+
+  <!-- htop -->
+  <div class="section orange">
+    <h2>📊 htop — Interactive Process Viewer</h2>
+    <div class="sub">Launch options</div>
+    <table>
+      <tr><td>htop</td><td>Open interactive viewer</td></tr>
+      <tr><td>htop -u username</td><td>Filter to one user</td></tr>
+      <tr><td>htop -p 1234,5678</td><td>Show only these PIDs</td></tr>
+      <tr><td>htop -d 10</td><td>Update every 1.0 s (tenths)</td></tr>
+      <tr><td>htop -s PERCENT_CPU</td><td>Sort by CPU on open</td></tr>
+    </table>
+    <div class="sub">Keyboard shortcuts (inside htop)</div>
+    <table>
+      <tr><td>F1 / h</td><td>Help screen</td></tr>
+      <tr><td>F2 / S</td><td>Setup (columns, colors, meters)</td></tr>
+      <tr><td>F3 / /</td><td>Search by process name</td></tr>
+      <tr><td>F4 / \</td><td>Filter visible processes</td></tr>
+      <tr><td>F5 / t</td><td>Toggle tree view</td></tr>
+      <tr><td>F6 / &lt; &gt;</td><td>Choose sort column</td></tr>
+      <tr><td>F7 / ]</td><td>Nice - (increase priority)</td></tr>
+      <tr><td>F8 / [</td><td>Nice + (decrease priority)</td></tr>
+      <tr><td>F9 / k</td><td>Kill process (choose signal)</td></tr>
+      <tr><td>F10 / q</td><td>Quit</td></tr>
+      <tr><td>Space</td><td>Tag a process</td></tr>
+      <tr><td>U</td><td>Untag all</td></tr>
+      <tr><td>P</td><td>Sort by CPU%</td></tr>
+      <tr><td>M</td><td>Sort by MEM%</td></tr>
+      <tr><td>T</td><td>Sort by TIME</td></tr>
+      <tr><td>I</td><td>Invert sort order</td></tr>
+      <tr><td>H</td><td>Hide/show user threads</td></tr>
+      <tr><td>K</td><td>Hide/show kernel threads</td></tr>
+      <tr><td>u</td><td>Filter by user</td></tr>
+      <tr><td>l</td><td>Show open files (lsof)</td></tr>
+      <tr><td>s</td><td>Trace syscalls (strace)</td></tr>
+      <tr><td>+/-</td><td>Expand/collapse tree node</td></tr>
+      <tr><td>a</td><td>Set CPU affinity</td></tr>
+      <tr><td>c</td><td>Tag process &amp; children</td></tr>
+    </table>
+    <div class="sub">Header meters</div>
+    <table>
+      <tr><td>CPU bars</td><td>Per-core utilisation</td></tr>
+      <tr><td>Mem / Swp bars</td><td>RAM &amp; swap usage</td></tr>
+      <tr><td>Tasks row</td><td>Total / running / threads / sleeping</td></tr>
+      <tr><td>Load average</td><td>1 / 5 / 15 min load</td></tr>
+      <tr><td>Uptime</td><td>System uptime</td></tr>
+    </table>
+  </div>
+
+  <!-- iostat -->
+  <div class="section purple">
+    <h2>💾 iostat — I/O &amp; CPU Statistics</h2>
+    <div class="sub">Basic usage (from sysstat package)</div>
+    <table>
+      <tr><td>iostat</td><td>One-time CPU + disk report</td></tr>
+      <tr><td>iostat -x</td><td>Extended disk stats</td></tr>
+      <tr><td>iostat -x 2</td><td>Extended, refresh every 2 s</td></tr>
+      <tr><td>iostat -x 2 5</td><td>Extended, 5 reports then exit</td></tr>
+      <tr><td>iostat -d</td><td>Disk only (no CPU)</td></tr>
+      <tr><td>iostat -c</td><td>CPU only (no disk)</td></tr>
+      <tr><td>iostat -h</td><td>Human-readable sizes</td></tr>
+      <tr><td>iostat -k</td><td>Output in KB/s</td></tr>
+      <tr><td>iostat -m</td><td>Output in MB/s</td></tr>
+      <tr><td>iostat -p sda</td><td>Stats for specific device + partitions</td></tr>
+      <tr><td>iostat -t</td><td>Show timestamp each report</td></tr>
+      <tr><td>iostat -y 2</td><td>Omit first summary (show live only)</td></tr>
+    </table>
+    <div class="sub">Key extended (-x) columns</div>
+    <table>
+      <tr><td>r/s, w/s</td><td>Read / write requests per second</td></tr>
+      <tr><td>rkB/s, wkB/s</td><td>KB read / written per second</td></tr>
+      <tr><td>rrqm/s, wrqm/s</td><td>Merged requests per second</td></tr>
+      <tr><td>await</td><td>Avg wait time per request (ms)</td></tr>
+      <tr><td>r_await, w_await</td><td>Separate read / write await</td></tr>
+      <tr><td>aqu-sz (avgqu-sz)</td><td>Avg queue length — if &gt;1, disk is saturated</td></tr>
+      <tr><td>%util</td><td>% time device was busy — &gt;90% = bottleneck</td></tr>
+      <tr><td>svctm</td><td>Avg service time (deprecated)</td></tr>
+    </table>
+    <div class="sub">Related tools</div>
+    <table>
+      <tr><td>iotop</td><td>Per-process I/O (like top for disk)</td></tr>
+      <tr><td>iotop -o</td><td>Show only active I/O processes</td></tr>
+      <tr><td>vmstat 2</td><td>VM, CPU, I/O summary every 2 s</td></tr>
+      <tr><td>sar -d 2 5</td><td>Disk activity (sysstat)</td></tr>
+      <tr><td>sar -u 2 5</td><td>CPU utilisation (sysstat)</td></tr>
+      <tr><td>lsblk</td><td>Block device tree</td></tr>
+      <tr><td>blockdev --getsize64 /dev/sda</td><td>Device size in bytes</td></tr>
+    </table>
+  </div>
+
+  <!-- strace -->
+  <div class="section teal">
+    <h2>🔬 strace — System Call Tracer</h2>
+    <div class="sub">Attach &amp; run</div>
+    <table>
+      <tr><td>strace ls</td><td>Trace all syscalls of <code>ls</code></td></tr>
+      <tr><td>strace -p 1234</td><td>Attach to running PID</td></tr>
+      <tr><td>strace -f cmd</td><td>Follow child processes / threads</td></tr>
+      <tr><td>strace -ff -o out cmd</td><td>Each thread to out.PID file</td></tr>
+    </table>
+    <div class="sub">Filtering</div>
+    <table>
+      <tr><td>strace -e trace=open,read,write</td><td>Trace specific syscalls</td></tr>
+      <tr><td>strace -e trace=file</td><td>File-related syscalls</td></tr>
+      <tr><td>strace -e trace=network</td><td>Network syscalls</td></tr>
+      <tr><td>strace -e trace=process</td><td>Process syscalls (fork, exec…)</td></tr>
+      <tr><td>strace -e trace=signal</td><td>Signal syscalls</td></tr>
+      <tr><td>strace -e trace=ipc</td><td>IPC syscalls</td></tr>
+      <tr><td>strace -e trace=memory</td><td>Memory syscalls (mmap, brk…)</td></tr>
+      <tr><td>strace -e trace=desc</td><td>File descriptor syscalls</td></tr>
+    </table>
+    <div class="sub">Output &amp; timing</div>
+    <table>
+      <tr><td>strace -tt cmd</td><td>Microsecond timestamps</td></tr>
+      <tr><td>strace -T cmd</td><td>Time spent in each call</td></tr>
+      <tr><td>strace -c cmd</td><td>Summary: count &amp; time per syscall</td></tr>
+      <tr><td>strace -C cmd</td><td>Summary + live trace</td></tr>
+      <tr><td>strace -o trace.log cmd</td><td>Save output to file</td></tr>
+      <tr><td>strace -s 256 cmd</td><td>Print up to 256 chars of strings</td></tr>
+      <tr><td>strace -v cmd</td><td>Verbose (full struct contents)</td></tr>
+      <tr><td>strace -x cmd</td><td>Print non-ASCII as hex</td></tr>
+      <tr><td>strace -e read=3 cmd</td><td>Hex dump reads on fd 3</td></tr>
+    </table>
+    <div class="sub">Common debug patterns</div>
+    <table>
+      <tr><td>strace -e openat -p $(pgrep app)</td><td>Which files is app opening?</td></tr>
+      <tr><td>strace -e trace=network -p 1234</td><td>Network calls of running proc</td></tr>
+      <tr><td>strace -c -p 1234</td><td>Syscall profile of live proc</td></tr>
+      <tr><td>strace -f -e trace=execve bash -c "cmd"</td><td>Trace all execs in script</td></tr>
+    </table>
+  </div>
+
+</div><!-- /row 2 -->
+
+<!-- ════════════════ ROW 3 ════════════════ -->
+<div class="grid" style="margin-top:8px;">
+
+  <!-- Filesystem -->
+  <div class="section pink span2">
+    <h2>📁 Filesystem</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 16px;">
+      <div>
+        <div class="sub">Navigation &amp; listing</div>
+        <table>
+          <tr><td>ls -lah</td><td>Long, hidden, human sizes</td></tr>
+          <tr><td>ls -lt</td><td>Sort by modification time</td></tr>
+          <tr><td>ls -lS</td><td>Sort by file size</td></tr>
+          <tr><td>tree -L 2</td><td>Directory tree depth 2</td></tr>
+          <tr><td>find . -name "*.log"</td><td>Find by name</td></tr>
+          <tr><td>find . -type f -mtime -1</td><td>Modified in last day</td></tr>
+          <tr><td>find . -size +100M</td><td>Files larger than 100M</td></tr>
+          <tr><td>find . -empty</td><td>Empty files &amp; dirs</td></tr>
+          <tr><td>find . -perm /a+x</td><td>Executable files</td></tr>
+          <tr><td>locate filename</td><td>Fast indexed search</td></tr>
+          <tr><td>updatedb</td><td>Rebuild locate index</td></tr>
+        </table>
+        <div class="sub">Disk usage</div>
+        <table>
+          <tr><td>df -h</td><td>Filesystem disk usage</td></tr>
+          <tr><td>df -i</td><td>Inode usage</td></tr>
+          <tr><td>du -sh *</td><td>Size of each item here</td></tr>
+          <tr><td>du -sh /var/log/*</td><td>Size of each log</td></tr>
+          <tr><td>du -ah . | sort -rh | head -20</td><td>Top 20 largest items</td></tr>
+          <tr><td>ncdu</td><td>Interactive disk usage browser</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="sub">File operations</div>
+        <table>
+          <tr><td>cp -r src/ dst/</td><td>Copy recursively</td></tr>
+          <tr><td>cp -a src/ dst/</td><td>Archive (preserve all attrs)</td></tr>
+          <tr><td>mv src dst</td><td>Move / rename</td></tr>
+          <tr><td>rm -rf dir/</td><td>Remove recursively (careful!)</td></tr>
+          <tr><td>rsync -avz src/ dst/</td><td>Sync, archive, compress, verbose</td></tr>
+          <tr><td>rsync -avz --delete src/ dst/</td><td>Mirror exactly</td></tr>
+          <tr><td>rsync -n</td><td>Dry run (no changes)</td></tr>
+          <tr><td>ln -s target link</td><td>Symlink</td></tr>
+          <tr><td>ln target hardlink</td><td>Hard link</td></tr>
+          <tr><td>readlink -f link</td><td>Resolve symlink fully</td></tr>
+        </table>
+        <div class="sub">Permissions &amp; ownership</div>
+        <table>
+          <tr><td>chmod 755 file</td><td>rwxr-xr-x</td></tr>
+          <tr><td>chmod -R 644 dir/</td><td>Recursive permission set</td></tr>
+          <tr><td>chmod u+x file</td><td>Add exec for owner</td></tr>
+          <tr><td>chown user:group file</td><td>Change owner &amp; group</td></tr>
+          <tr><td>chown -R user:group dir/</td><td>Recursive ownership</td></tr>
+          <tr><td>stat file</td><td>Full file metadata</td></tr>
+          <tr><td>umask 022</td><td>Default permission mask</td></tr>
+          <tr><td>lsattr file</td><td>Extended attributes</td></tr>
+          <tr><td>chattr +i file</td><td>Make immutable</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="sub">Mounts &amp; devices</div>
+        <table>
+          <tr><td>mount</td><td>Show all mounts</td></tr>
+          <tr><td>mount -t ext4 /dev/sdb1 /mnt</td><td>Mount partition</td></tr>
+          <tr><td>umount /mnt</td><td>Unmount</td></tr>
+          <tr><td>lsblk -f</td><td>Block devices + filesystems</td></tr>
+          <tr><td>blkid</td><td>UUIDs &amp; fs types</td></tr>
+          <tr><td>fdisk -l</td><td>Partition table (root)</td></tr>
+          <tr><td>parted -l</td><td>Partition info</td></tr>
+          <tr><td>mkfs.ext4 /dev/sdb1</td><td>Format as ext4</td></tr>
+          <tr><td>fsck /dev/sdb1</td><td>Filesystem check (unmounted)</td></tr>
+        </table>
+        <div class="sub">Archives &amp; compression</div>
+        <table>
+          <tr><td>tar -czvf out.tar.gz dir/</td><td>Create gzip archive</td></tr>
+          <tr><td>tar -xzvf out.tar.gz</td><td>Extract gzip archive</td></tr>
+          <tr><td>tar -cjvf out.tar.bz2 dir/</td><td>Create bzip2 archive</td></tr>
+          <tr><td>tar -tf out.tar.gz</td><td>List contents without extracting</td></tr>
+          <tr><td>zip -r out.zip dir/</td><td>Zip directory</td></tr>
+          <tr><td>unzip out.zip -d dst/</td><td>Unzip to destination</td></tr>
+          <tr><td>gzip file / gunzip file.gz</td><td>Compress / decompress</td></tr>
+          <tr><td>xz -9 file</td><td>High-compression xz</td></tr>
+        </table>
+        <div class="sub">File inspection</div>
+        <table>
+          <tr><td>file myfile</td><td>Detect file type</td></tr>
+          <tr><td>xxd file | head</td><td>Hex dump</td></tr>
+          <tr><td>strings file | grep pass</td><td>Printable strings in binary</td></tr>
+          <tr><td>wc -l file</td><td>Line count</td></tr>
+          <tr><td>md5sum | sha256sum file</td><td>Checksum</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Network & misc -->
+  <div class="section">
+    <h2>🌐 Network &amp; Misc</h2>
+    <div class="sub">Networking</div>
+    <table>
+      <tr><td>ip addr</td><td>Show IP addresses</td></tr>
+      <tr><td>ip link</td><td>Network interfaces</td></tr>
+      <tr><td>ip route</td><td>Routing table</td></tr>
+      <tr><td>ss -tulnp</td><td>Listening ports + PIDs</td></tr>
+      <tr><td>ss -s</td><td>Socket summary</td></tr>
+      <tr><td>netstat -tulnp</td><td>Legacy — same as ss</td></tr>
+      <tr><td>curl -I https://host</td><td>HTTP headers only</td></tr>
+      <tr><td>curl -o out.json https://api</td><td>Download to file</td></tr>
+      <tr><td>wget -q -O - URL | jq</td><td>Fetch &amp; parse JSON</td></tr>
+      <tr><td>ping -c 4 host</td><td>ICMP ping, 4 packets</td></tr>
+      <tr><td>traceroute host</td><td>Route hops</td></tr>
+      <tr><td>nslookup host</td><td>DNS lookup</td></tr>
+      <tr><td>dig host</td><td>Detailed DNS lookup</td></tr>
+      <tr><td>tcpdump -i eth0 port 80</td><td>Capture HTTP traffic</td></tr>
+      <tr><td>tcpdump -w cap.pcap</td><td>Save capture to file</td></tr>
+      <tr><td>nmap -sV host</td><td>Port + service scan</td></tr>
+    </table>
+    <div class="sub">Text processing</div>
+    <table>
+      <tr><td>grep -rn "pattern" dir/</td><td>Recursive search with lines</td></tr>
+      <tr><td>grep -v "pattern" file</td><td>Invert match</td></tr>
+      <tr><td>awk '{print $1,$3}' file</td><td>Print columns 1 and 3</td></tr>
+      <tr><td>awk -F: '{print $1}' /etc/passwd</td><td>Custom delimiter</td></tr>
+      <tr><td>sed 's/old/new/g' file</td><td>Replace all occurrences</td></tr>
+      <tr><td>sed -i 's/old/new/g' file</td><td>In-place edit</td></tr>
+      <tr><td>sort -k2 -n file</td><td>Sort by column 2 numerically</td></tr>
+      <tr><td>sort | uniq -c | sort -rn</td><td>Count &amp; rank unique lines</td></tr>
+      <tr><td>cut -d, -f2 file.csv</td><td>Second CSV field</td></tr>
+      <tr><td>jq '.key' file.json</td><td>Pretty-print / query JSON</td></tr>
+      <tr><td>xargs -I{} cmd {}</td><td>Build cmds from stdin</td></tr>
+      <tr><td>tee out.txt</td><td>Stdout + write to file</td></tr>
+    </table>
+  </div>
+
+</div><!-- /row 3 -->
+
+<footer>
+  Linux Command Line Cheat Sheet &nbsp;&mdash;&nbsp; Generated March 2026 &nbsp;&mdash;&nbsp;
+  Open in browser → Ctrl+P → <strong>Save as PDF</strong> (set to Landscape, no margins for best result)
+</footer>
+
+</div><!-- /page -->
+</body>
+</html>

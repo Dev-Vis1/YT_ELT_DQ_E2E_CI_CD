@@ -1,0 +1,25 @@
+#!/bin/bash
+# Creates multiple PostgreSQL databases and their dedicated users.
+# Runs automatically on first container start via /docker-entrypoint-initdb.d/
+# All variables are supplied by the .env file (or CI environment variables).
+
+set -e
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
+
+    -- Metadata database (Airflow internal state)
+    CREATE USER $METADATA_DATABASE_USERNAME WITH PASSWORD '$METADATA_DATABASE_PASSWORD';
+    CREATE DATABASE $METADATA_DATABASE_NAME;
+    GRANT ALL PRIVILEGES ON DATABASE $METADATA_DATABASE_NAME TO $METADATA_DATABASE_USERNAME;
+
+    -- Celery results backend database
+    CREATE USER $CELERY_BACKEND_USERNAME WITH PASSWORD '$CELERY_BACKEND_PASSWORD';
+    CREATE DATABASE $CELERY_BACKEND_NAME;
+    GRANT ALL PRIVILEGES ON DATABASE $CELERY_BACKEND_NAME TO $CELERY_BACKEND_USERNAME;
+
+    -- ELT target database
+    CREATE USER $ELT_DATABASE_USERNAME WITH PASSWORD '$ELT_DATABASE_PASSWORD';
+    CREATE DATABASE $ELT_DATABASE_NAME;
+    GRANT ALL PRIVILEGES ON DATABASE $ELT_DATABASE_NAME TO $ELT_DATABASE_USERNAME;
+
+EOSQL
